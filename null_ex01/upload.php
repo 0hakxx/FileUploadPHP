@@ -2,7 +2,7 @@
 // UTF-8 인코딩으로 HTML 문서 타입을 설정
 header("Content-Type: text/html; charset=UTF-8");
 
-$gubun = $_GET["gubun"];
+$gubun = trim($_GET["gubun"]);
 
 // $_FILES 배열에서 'userfile' 필드의 'name' 값이 비어있는지 확인
 if(empty($_FILES["userfile"]["name"])) {
