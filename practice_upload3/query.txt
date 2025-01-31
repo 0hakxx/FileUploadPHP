@@ -1,0 +1,13 @@
+create database pentest;
+use pentest;
+create table practice_upload_bbs (
+    idx int not null auto_increment,
+    title varchar(50),
+    writer varchar(20),
+    date date,
+    file varchar(50),
+    contents text,
+    gubun char(30),
+    password varchar(50),
+    Primary key(idx)
+);
