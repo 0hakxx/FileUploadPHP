@@ -1,5 +1,5 @@
-<? include_once("./inc/common.php"); ?>
-<?
+<?php include_once("./inc/common.php"); ?>
+<?php
     header("Content-Type: text/html; charset=UTF-8");
 
 
