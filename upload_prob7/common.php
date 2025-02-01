@@ -20,7 +20,7 @@
 	function mysql_conn() {
 		$host = "127.0.0.1";
 		$id = "root";
-		$pw = "crehacktive";
+		$pw = "123456";
 		$db = "pentest";
 	
 		$db_conn = new mysqli($host, $id, $pw, $db);
